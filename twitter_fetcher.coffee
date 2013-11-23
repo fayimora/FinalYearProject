@@ -5,6 +5,7 @@ password = process.env.MONGO_PASSWORD
 dbHost = "127.0.0.1"
 dbPort = mongo.Connection.DEFAULT_PORT
 db     = new mongo.Db("tweets", new mongo.Server(dbHost, dbPort, {}))
+tweetsCollection = "apple_tweets"
 
 auth = new twitter(
   consumer_key: '',
@@ -14,10 +15,9 @@ auth = new twitter(
 )
 console.log "Done authenticating with Twitter!"
 
-tweetsCollection = ""
 
 db.open (err) ->
-  db.collection "apple_tweets", (err, collection) ->
+  db.collection tweetsCollection, (err, collection) ->
     console.log "Connected to #{dbHost}:#{dbPort}"
     tweetsCollection = collection
 
