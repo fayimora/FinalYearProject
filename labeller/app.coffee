@@ -6,11 +6,13 @@ express = require("express")
 http    = require("http")
 path    = require("path")
 mongo   = require('mongodb')
+engine = require('ejs-locals')
 
 app    = express()
 # all environments
 app.set "port", process.env.PORT or 3000
 app.set "views", path.join(__dirname, "views")
+app.engine('ejs', engine)
 app.set "view engine", "ejs"
 app.use express.favicon()
 app.use express.logger("dev")
