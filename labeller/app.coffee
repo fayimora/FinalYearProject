@@ -53,7 +53,7 @@ db.open (err) ->
     tweetsCollection = collection
 
 getTweets = (callback) ->
-  tweetsCollection.find({"relevant": {"$exists": false}},{"limit": 10}, (error, cursor) ->
+  tweetsCollection.find({"relevant": {"$exists": false}},{"limit": 20}, (error, cursor) ->
     cursor.toArray((error, tweets) ->
       callback(tweets);
     )
