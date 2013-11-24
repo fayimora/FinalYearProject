@@ -25,7 +25,13 @@ app.use express.errorHandler()  if "development" is app.get("env")
 
 app.get "/", (req, res) ->
   getTweets (tweets) ->
-    res.send tweets
+    res.render "index", {title: "Data Labeller", tweets: tweets}
+
+app.post "/update", (req, res) ->
+  updatedTweets = req.body
+  updateTweets(updatedTweets)
+  res.send updatedTweets
+
 
 dbHost = "127.0.0.1"
 dbPort = mongo.Connection.DEFAULT_PORT
@@ -46,6 +52,15 @@ getTweets = (callback) ->
       callback(tweets);
     )
   )
+
+updateTweets = (data) ->
+  console.log tweetsCollection
+  ObjectID = mongo.ObjectID
+  for key, value of data
+    relevance = if value == "relevant" then true else false
+    tweetsCollection.update {_id: new ObjectID(key)}, {$set: {"relevant": relevance}}, false, true,
+    (error, cursor) ->
+
 
 http.createServer(app).listen app.get("port"), ->
   console.log "Express server listening on port " + app.get("port")

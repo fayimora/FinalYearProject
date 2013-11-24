@@ -8,7 +8,7 @@
     <meta name="author" content="Fayimora Femi-Balogun">
     <link rel="shortcut icon" href="../../docs-assets/ico/favicon.png">
 
-    <title><%= title %></title>
+    <title>......</title>
 
     <!-- Bootstrap core CSS -->
     <link rel='stylesheet' href='/stylesheets/bootstrap.min.css' />
@@ -27,7 +27,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#"><%= title %></a>
+          <a class="navbar-brand" href="#">AAAA</a>
         </div>
       </div>
 
@@ -47,6 +47,28 @@
           </ul>
         </p>
       </div>
+
+      <form method="POST" action="/update" class="row">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Tweet</th>
+              <th colspan="2">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+          <% tweets.forEach(function(tweet){ %>
+            <tr>
+            <td><%= tweet.text %></td>
+            <td><label>relevant: <input type="radio" name="<%= tweet._id%>" value="relevant"></label></td>
+            <td><label>irrelevant: <input type="radio" name="<%= tweet._id%>" value="irrelevant"></label></td>
+
+          </tr>
+        <% }) %>
+          </tbody>
+        </table>
+          <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+      </form>
 
     </div> <!-- /container -->
   </body>
