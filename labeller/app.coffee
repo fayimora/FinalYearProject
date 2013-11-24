@@ -41,10 +41,10 @@ app.get "/thanks", (req, res) ->
 
 dbHost = "127.0.0.1"
 dbPort = mongo.Connection.DEFAULT_PORT
-db     = new mongo.Db("twitter_node", new mongo.Server(dbHost, dbPort, {}))
+db     = new mongo.Db("tweets", new mongo.Server(dbHost, dbPort, {}))
 
 tweetsCollection = undefined
-tweetsCollectionName = "tweets"
+tweetsCollectionName = "apple_tweets"
 
 db.open (err) ->
   console.log("We are connected! " + dbHost + ":" + dbPort)
