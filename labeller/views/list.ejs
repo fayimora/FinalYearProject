@@ -1,0 +1,39 @@
+<!-- Main component for a primary marketing message or call to action -->
+<div class="jumbotron">
+  <h1>Thanks a lot for helping!</h1>
+  <p>
+  The instruction are really simple.
+  <ul>
+    <li>Each row in the table contains a tweet. Read the tweet!</li>
+    <li>Determine if the tweet is relevant or irrelevant. A relevant tweet is one that is
+    talking about <a href="http://apple.com/uk">Apple Inc.</a>. It might be about the
+    iPhone, iPad, MacBook .. anything Apple!. Of course an irrelevant tweet is the opposite!</li>
+    <li>Select relevant or irrelevant from the options for that tweet and move on to the
+    next one</li>
+    <li>When you are done, there is a submit button at the end of the page. Click it!</li>
+  </ul>
+  </p>
+</div>
+
+<form method="POST" action="/update" class="row">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Tweet</th>
+        <th colspan="2">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% tweets.forEach(function(tweet){ %>
+      <tr>
+      <td><%= tweet.text %></td>
+      <td><label>relevant: <input type="radio" name="<%= tweet._id%>" value="relevant"></label></td>
+      <td><label>irrelevant: <input type="radio" name="<%= tweet._id%>" value="irrelevant"></label></td>
+
+    </tr>
+  <% }) %>
+    </tbody>
+  </table>
+  <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+</form>
+

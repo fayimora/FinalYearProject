@@ -25,7 +25,7 @@ app.use express.errorHandler()  if "development" is app.get("env")
 
 app.get "/", (req, res) ->
   getTweets (tweets) ->
-    res.render "index", {title: "Data Labeller", tweets: tweets}
+    res.render "list", {title: "Data Labeller", tweets: tweets}
 
 app.post "/update", (req, res) ->
   updatedTweets = req.body
