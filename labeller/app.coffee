@@ -41,10 +41,10 @@ app.get "/thanks", (req, res) ->
 
 dbHost = "127.0.0.1"
 dbPort = mongo.Connection.DEFAULT_PORT
-db     = new mongo.Db("twitter_node", new mongo.Server(dbHost, dbPort, {}))
+db     = new mongo.Db(process.env.FYP_DB, new mongo.Server(dbHost, dbPort, {}))
 
 tweetsCollection = undefined
-tweetsCollectionName = "tweets"
+tweetsCollectionName = process.env.FYP_COLLECTION
 
 db.open (err) ->
   console.log("We are connected! " + dbHost + ":" + dbPort)
@@ -53,7 +53,7 @@ db.open (err) ->
     tweetsCollection = collection
 
 getTweets = (callback) ->
-  tweetsCollection.find({},{"limit": 10}, (error, cursor) ->
+  tweetsCollection.find({"relevant": {"$exists": false}},{"limit": 10}, (error, cursor) ->
     cursor.toArray((error, tweets) ->
       callback(tweets);
     )
