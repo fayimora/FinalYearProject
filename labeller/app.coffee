@@ -25,15 +25,19 @@ app.use express.static(path.join(__dirname, "public"))
 # development only
 app.use express.errorHandler()  if "development" is app.get("env")
 
+title = "Data Labeller"
 app.get "/", (req, res) ->
   getTweets (tweets) ->
-    res.render "list", {title: "Data Labeller", tweets: tweets}
+    res.render "list", {title: title, tweets: tweets}
 
 app.post "/update", (req, res) ->
   updatedTweets = req.body
   updateTweets(updatedTweets)
-  res.send updatedTweets
+  res.redirect "thanks"
 
+app.get "/thanks", (req, res) ->
+  console.log req
+  res.render "thanks", {title: title}
 
 dbHost = "127.0.0.1"
 dbPort = mongo.Connection.DEFAULT_PORT
