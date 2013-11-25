@@ -2,6 +2,7 @@
 ###
 Module dependencies.
 ###
+require('newrelic')
 express = require("express")
 http    = require("http")
 path    = require("path")
