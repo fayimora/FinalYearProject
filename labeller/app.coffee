@@ -46,6 +46,7 @@ db     = new mongo.Db("tweets", new mongo.Server(dbHost, dbPort, {}))
 tweetsCollection = undefined
 tweetsCollectionName = "apple_tweets"
 
+collectionCount = process.env.FYP_COLLECTION_COUNT
 db.open (err) ->
   console.log("We are connected! " + dbHost + ":" + dbPort)
 
@@ -53,7 +54,8 @@ db.open (err) ->
     tweetsCollection = collection
 
 getTweets = (callback) ->
-  tweetsCollection.find({"relevant": {"$exists": false}},{"limit": 20}, (error, cursor) ->
+  # tweetsCollection.count( (err, count) -> num = count )
+  tweetsCollection.find({relevant: {$exists: false}},{limit: 20, skip: getRandomInt(0, collectionCount) }, (error, cursor) ->
     cursor.toArray((error, tweets) ->
       callback(tweets);
     )
@@ -67,6 +69,8 @@ updateTweets = (data) ->
     tweetsCollection.update {_id: new ObjectID(key)}, {$set: {"relevant": relevance}}, false, true,
     (error, cursor) ->
 
+getRandomInt =  (min, max) ->
+  Math.floor(Math.random() * (max-min + 1)) + min
 
 http.createServer(app).listen app.get("port"), ->
   console.log "Express server listening on port " + app.get("port")
