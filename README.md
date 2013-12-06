@@ -1,10 +1,7 @@
 This repository contains every line of code I write for my final year project.
-
-
 License
 =======
 
-one line to give the program's name and a brief description
 Copyright (C) 2013 Fayimora Femi-Balogun
 
 Permission is hereby granted, free of charge, to any person obtaining
