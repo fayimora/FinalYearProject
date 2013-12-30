@@ -1,4 +1,6 @@
-This repository contains every line of code I use for my final year project.
+This repository contains every line of code I write for my final year project.
+License
+=======
 
 Copyright (C) 2013 Fayimora Femi-Balogun
 

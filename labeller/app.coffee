@@ -56,7 +56,7 @@ db.open (err) ->
 
 getTweets = (callback) ->
   # tweetsCollection.count( (err, count) -> num = count )
-  tweetsCollection.find({relevant: {$exists: false}},{limit: 20, skip: getRandomInt(0, collectionCount) }, (error, cursor) ->
+  tweetsCollection.find({relevant: {$exists: false}},{limit: 30, skip: getRandomInt(0, collectionCount) }, (error, cursor) ->
     cursor.toArray((error, tweets) ->
       callback(tweets);
     )
