@@ -6,7 +6,7 @@ db = client.tweets
 apple_tweets = db.apple_tweets
 
 print "Fetching data from the database..."
-labelled_data = apple_tweets.find({"relevant": {"$exists": True}}).limit(50)
+labelled_data = apple_tweets.find({"relevant": {"$exists": True}})
 
 print "Now creating instances..."
 for tweet in labelled_data:
