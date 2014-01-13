@@ -11,8 +11,8 @@ def features(sentence):
     return dict((w, True) for w in words)
 
 print "Extracting relevant and irrelevant examples..."
-relevant_examples = get_data("data/relevant/*", "relevant")
-irrelevant_examples = get_data("data/relevant/*", "irrelevant")
+relevant_examples = get_data("data/relevant/*", "relevant")[:1500]
+irrelevant_examples = get_data("data/irrelevant/*", "irrelevant")[:1500]
 
 print "Creating training set..."
 training_set = relevant_examples + irrelevant_examples
