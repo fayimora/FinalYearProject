@@ -1,16 +1,19 @@
-import glob
+import glob, os, re
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.cluster import KMeans
 from sklearn import metrics
 
 def get_data(path):
     examples = glob.glob(path)
-    to_text = lambda fname: open(fname).read()
+    to_text = lambda fname: (re.sub(r"data/(ir)?relevant/", "" ,fname), open(fname).read())
     return map(to_text, examples)
 
 categories = None
 
-dataset = get_data("data/relevant/*") + get_data("data/irrelevant/*")
+print("Aggregating data")
+data = get_data("data/relevant/*") + get_data("data/irrelevant/*")
+dataset = map(lambda (fname, text): text, data)
+ids = map(lambda (fname, text): fname, data)
 
 vectorizer = TfidfVectorizer(max_df=0.5, max_features=10, stop_words='english', use_idf=True)
 X = vectorizer.fit_transform(dataset)
@@ -23,3 +26,15 @@ print("Clustering data with %s" % kmeans)
 
 kmeans.fit_predict(X)
 print('Done fitting.')
+
+print('Writing result to output folder')
+for id, label, tweet in zip(ids, kmeans.labels_, dataset):
+  location = "output/%s/" % label
+  if not os.path.exists(location):
+    os.makedirs(location)
+  output = location + id
+  f = open(output, 'w')
+  f.write(tweet)
+  f.close()
+
+print("Write complete.")
