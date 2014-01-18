@@ -27,6 +27,10 @@ print("Clustering data with %s" % kmeans)
 kmeans.fit_predict(X)
 print('Done fitting.')
 
+if os.path.exists("output"):
+  print('Backing up old output folder')
+  os.system("mv -f output output-backup")
+
 print('Writing result to output folder')
 for id, label, tweet in zip(ids, kmeans.labels_, dataset):
   location = "output/%s/" % label
