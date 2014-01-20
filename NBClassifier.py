@@ -1,8 +1,8 @@
 import nltk, glob, random
 from nltk.classify import NaiveBayesClassifier
-from nltk.collocations import BigramCollocationFinder
-from nltk.metrics import BigramAssocMeasures as BAM
-from itertools import chain
+# from nltk.collocations import BigramCollocationFinder
+# from nltk.metrics import BigramAssocMeasures as BAM
+# from itertools import chain
 
 def get_data(path, label):
     examples = glob.glob(path)
@@ -11,10 +11,10 @@ def get_data(path, label):
 
 def features(sentence):
   words = sentence.lower().split()
-  bigram_finder = BigramCollocationFinder.from_words(words)
-  bigrams = bigram_finder.nbest(BAM.chi_sq, 200)
-  return dict((bg, True) for bg in chain(words, bigrams))
-  # return dict((w, True) for w in words)
+  return dict((w, True) for w in words)
+  # bigram_finder = BigramCollocationFinder.from_words(words)
+  # bigrams = bigram_finder.nbest(BAM.chi_sq, 200)
+  # return dict((bg, True) for bg in chain(words, bigrams))
 
 print "Extracting relevant and irrelevant examples..."
 relevant_examples = get_data("data/relevant/*", "relevant")
