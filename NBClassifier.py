@@ -22,8 +22,10 @@ irrelevant_examples = get_data("data/irrelevant/*", "irrelevant")
 
 print "Creating training set..."
 featuresets = relevant_examples + irrelevant_examples
+
 print "Shuffling training set"
 random.shuffle(featuresets)
+
 print "Featuresets: " + str(len(featuresets))
 
 N = int(len(featuresets) * 0.85)
