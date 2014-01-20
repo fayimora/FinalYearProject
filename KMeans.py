@@ -8,6 +8,30 @@ def get_data(path):
     to_text = lambda fname: (re.sub(r"data/(ir)?relevant/", "" ,fname), open(fname).read())
     return map(to_text, examples)
 
+def plot(kmeans, dataset):
+    kmeans.fit(dataset)
+    h = 0.1
+    x_min, x_max = dataset[:, 0].min() + 1, dataset[:, 0].max() - 1
+    y_min, y_max = dataset[:, 1].min() + 1, dataset[:, 1].max() - 1
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
+    Z = kmeans.predict(np.c_[xx.ravel(), yy.ravel()])
+
+    # Put the result into a color plot
+    Z = Z.reshape(xx.shape)
+    pl.figure(1)
+    pl.clf()
+
+    pl.plot(dataset[:, 0], dataset[:, 1], 'k.', markersize=2)
+    # Plot the centroids as a white X
+    centroids = kmeans.cluster_centers_
+    pl.scatter(centroids[:, 0], centroids[:, 1], marker='x', s=20, linewidths=3, color='r', zorder=10)
+    pl.title('K-means clustering on tweets')
+    pl.xlim(x_min, x_max)
+    pl.ylim(y_min, y_max)
+    pl.xticks(())
+    pl.yticks(())
+    pl.show()
+
 categories = None
 
 print("Aggregating data")
@@ -19,7 +43,7 @@ vectorizer = TfidfVectorizer(max_df=0.5, max_features=10, stop_words='english', 
 X = vectorizer.fit_transform(dataset)
 print("n_samples: %d, n_features: %d" % X.shape)
 
-K = 10
+K = 50
 # kmeans = MiniBatchKMeans(n_clusters=K, init='k-means++', max_iter=200, n_init=5, verbose=True, n_jobs=-1)
 kmeans = KMeans(n_clusters=K, init='k-means++', max_iter=200, n_init=1, verbose=True, n_jobs=-1)
 print("Clustering data with %s" % kmeans)
