@@ -1,4 +1,4 @@
-import nltk
+import nltk, random
 from nltk.classify import NaiveBayesClassifier
 import glob
 
@@ -17,9 +17,11 @@ irrelevant_examples = get_data("data/irrelevant/*", "irrelevant")
 
 print "Creating training set..."
 featuresets = relevant_examples + irrelevant_examples
+print "Shuffling training set"
+random.shuffle(featuresets)
 print "Featuresets: " + str(len(featuresets))
 
-N = 100000
+N = int(len(featuresets) * 0.85)
 train_set, test_set = featuresets[N:], featuresets[:N]
 print "Train set: " + str(len(train_set))
 print "Test set: " + str(len(test_set))
