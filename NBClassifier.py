@@ -38,6 +38,6 @@ print "Training in progress..."
 classifier = NaiveBayesClassifier.train(train_set)
 print "Finished training!"
 
-classifier.show_most_informative_features()
+classifier.show_most_informative_features(20)
 accuracy = nltk.classify.util.accuracy(classifier, test_set)
 print "Accuracy: " + str(accuracy)
