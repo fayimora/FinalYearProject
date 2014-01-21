@@ -1,9 +1,13 @@
-import nltk, glob, random
+import nltk, glob, random, argparse
 from nltk.classify import NaiveBayesClassifier
 from sklearn import cross_validation
-# from nltk.collocations import BigramCollocationFinder
-# from nltk.metrics import BigramAssocMeasures as BAM
-# from itertools import chain
+from nltk.collocations import BigramCollocationFinder
+from nltk.metrics import BigramAssocMeasures as BAM
+from itertools import chain
+
+parser = argparse.ArgumentParser(description = "Naive Bayes Classifier")
+parser.add_argument('--bigrams', action='store_true', default=False, help="Use BigramCollocationFinder for feature extaction")
+args = parser.parse_args()
 
 def get_data(path, label):
     examples = glob.glob(path)
@@ -12,10 +16,12 @@ def get_data(path, label):
 
 def features(sentence):
   words = sentence.lower().split()
-  return dict((w, True) for w in words)
-  # bigram_finder = BigramCollocationFinder.from_words(words)
-  # bigrams = bigram_finder.nbest(BAM.chi_sq, 200)
-  # return dict((bg, True) for bg in chain(words, bigrams))
+  if not args.bigrams:
+    return dict((w, True) for w in words)
+  else:
+    bigram_finder = BigramCollocationFinder.from_words(words)
+    bigrams = bigram_finder.nbest(BAM.chi_sq, 200)
+    return dict((bg, True) for bg in chain(words, bigrams))
 
 print "Extracting relevant and irrelevant examples..."
 relevant_examples = get_data("data/relevant/*", "relevant")
