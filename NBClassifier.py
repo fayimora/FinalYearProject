@@ -54,5 +54,5 @@ for traincv, testcv in cv:
   accuracies.append(accuracy)
 
 print "Accuracies:", accuracies
-print "Avg. Accuracies:", sum(accuracies)/len(accuracies)
+print "Avg. Accuracy:", sum(accuracies)/len(accuracies)
 
