@@ -29,19 +29,19 @@ random.shuffle(featuresets)
 
 print "Featuresets: " + str(len(featuresets))
 
-N = int(len(featuresets) * 0.85)
-train_set, test_set = featuresets[:N], featuresets[N:]
+# N = int(len(featuresets) * 0.85)
+# train_set, test_set = featuresets[:N], featuresets[N:]
 
-print "Train set: " + str(len(train_set))
-print "Test set: " + str(len(test_set))
+# print "Train set: " + str(len(train_set))
+# print "Test set: " + str(len(test_set))
 
-print "Training in progress..."
-classifier = NaiveBayesClassifier.train(train_set)
-print "Finished training!"
+# print "Training in progress..."
+# classifier = NaiveBayesClassifier.train(train_set)
+# print "Finished training!"
 
-classifier.show_most_informative_features(20)
-accuracy = nltk.classify.util.accuracy(classifier, test_set)
-print "Accuracy: " + str(accuracy)
+# classifier.show_most_informative_features(20)
+# accuracy = nltk.classify.util.accuracy(classifier, test_set)
+# print "Accuracy: " + str(accuracy)
 
 print "\n\nBegin Cross validation"
 cv = cross_validation.KFold(len(featuresets), n_folds=10, indices=True, shuffle=False,
