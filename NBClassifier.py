@@ -1,5 +1,6 @@
 import nltk, glob, random
 from nltk.classify import NaiveBayesClassifier
+from sklearn import cross_validation
 # from nltk.collocations import BigramCollocationFinder
 # from nltk.metrics import BigramAssocMeasures as BAM
 # from itertools import chain
@@ -41,3 +42,17 @@ print "Finished training!"
 classifier.show_most_informative_features(20)
 accuracy = nltk.classify.util.accuracy(classifier, test_set)
 print "Accuracy: " + str(accuracy)
+
+print "\n\nBegin Cross validation"
+cv = cross_validation.KFold(len(featuresets), n_folds=10, indices=True, shuffle=False,
+    random_state=None, k=None)
+
+accuracies = []
+for traincv, testcv in cv:
+  classifier = NaiveBayesClassifier.train(featuresets[traincv[0]:traincv[len(traincv)-1]])
+  accuracy = nltk.classify.util.accuracy(classifier, featuresets[testcv[0]:testcv[len(testcv)-1]])
+  accuracies.append(accuracy)
+
+print "Accuracies:", accuracies
+print "Avg. Accuracies:", sum(accuracies)/len(accuracies)
+
