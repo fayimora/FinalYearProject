@@ -10,18 +10,18 @@ parser.add_argument('--bigrams', action='store_true', default=False, help="Use B
 args = parser.parse_args()
 
 def get_data(path, label):
-  examples = glob.glob(path)
-  to_text = lambda fname: (features(open(fname).read()), label)
-  return map(to_text, examples)
+    examples = glob.glob(path)
+    to_text = lambda fname: (features(open(fname).read()), label)
+    return map(to_text, examples)
 
 def features(sentence):
-  words = sentence.lower().split()
-  if not args.bigrams:
-    return dict((w, True) for w in words)
-  else:
-    bigram_finder = BigramCollocationFinder.from_words(words)
-    bigrams = bigram_finder.nbest(BAM.chi_sq, 200)
-    return dict((bg, True) for bg in chain(words, bigrams))
+    words = sentence.lower().split()
+    if not args.bigrams:
+        return dict((w, True) for w in words)
+    else:
+        bigram_finder = BigramCollocationFinder.from_words(words)
+        bigrams = bigram_finder.nbest(BAM.chi_sq, 200)
+        return dict((bg, True) for bg in chain(words, bigrams))
 
 print "Extracting relevant and irrelevant examples..."
 relevant_examples = get_data("data/relevant/*", "relevant")
@@ -51,13 +51,13 @@ print "Featuresets: " + str(len(featuresets))
 
 print "\nBegin Cross validation"
 cv = cross_validation.KFold(len(featuresets), n_folds=10, indices=True, shuffle=True,
-    random_state=None, k=None)
+        random_state=None, k=None)
 
 accuracies = []
 for traincv, testcv in cv:
-  classifier = NaiveBayesClassifier.train(featuresets[traincv[0]:traincv[len(traincv)-1]])
-  accuracy = nltk.classify.util.accuracy(classifier, featuresets[testcv[0]:testcv[len(testcv)-1]])
-  accuracies.append(accuracy)
+    classifier = NaiveBayesClassifier.train(featuresets[traincv[0]:traincv[len(traincv)-1]])
+    accuracy = nltk.classify.util.accuracy(classifier, featuresets[testcv[0]:testcv[len(testcv)-1]])
+    accuracies.append(accuracy)
 
 print "Accuracies:", accuracies
 print "Avg. Accuracy:", sum(accuracies)/len(accuracies)
