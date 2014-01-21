@@ -10,9 +10,9 @@ parser.add_argument('--bigrams', action='store_true', default=False, help="Use B
 args = parser.parse_args()
 
 def get_data(path, label):
-    examples = glob.glob(path)
-    to_text = lambda fname: (features(open(fname).read()), label)
-    return map(to_text, examples)
+  examples = glob.glob(path)
+  to_text = lambda fname: (features(open(fname).read()), label)
+  return map(to_text, examples)
 
 def features(sentence):
   words = sentence.lower().split()
