@@ -43,8 +43,8 @@ print "Featuresets: " + str(len(featuresets))
 # accuracy = nltk.classify.util.accuracy(classifier, test_set)
 # print "Accuracy: " + str(accuracy)
 
-print "\n\nBegin Cross validation"
-cv = cross_validation.KFold(len(featuresets), n_folds=10, indices=True, shuffle=False,
+print "\nBegin Cross validation"
+cv = cross_validation.KFold(len(featuresets), n_folds=10, indices=True, shuffle=True,
     random_state=None, k=None)
 
 accuracies = []
