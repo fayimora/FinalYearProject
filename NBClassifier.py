@@ -29,7 +29,7 @@ random.shuffle(featuresets)
 print "Featuresets: " + str(len(featuresets))
 
 N = int(len(featuresets) * 0.85)
-train_set, test_set = featuresets[N:], featuresets[:N]
+train_set, test_set = featuresets[:N], featuresets[N:]
 
 print "Train set: " + str(len(train_set))
 print "Test set: " + str(len(test_set))
