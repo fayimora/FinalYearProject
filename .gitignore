@@ -3,3 +3,4 @@ newrelic.js
 *.log
 data
 output
+output-backup
