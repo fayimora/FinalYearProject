@@ -41,6 +41,7 @@ cv = cross_validation.KFold(len(featuresets), n_folds=10, indices=True, shuffle=
 accuracies = []
 for traincv, testcv in cv:
     classifier = NaiveBayesClassifier.train(featuresets[traincv[0]:traincv[len(traincv)-1]])
+    classifier.show_most_informative_features()
     accuracy = nltk.classify.util.accuracy(classifier, featuresets[testcv[0]:testcv[len(testcv)-1]])
     accuracies.append(accuracy)
 
