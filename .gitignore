@@ -2,5 +2,6 @@ node_modules
 newrelic.js
 *.log
 data
+data_3600
 output
 output-backup
