@@ -1,46 +1,45 @@
-import nltk, glob, random, argparse
-from nltk.classify import NaiveBayesClassifier
-from sklearn import cross_validation
+import glob
+from sklearn.naive_bayes import MultinomialNB
 from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.utils import shuffle
-
-parser = argparse.ArgumentParser(description = "Naive Bayes Classifier")
-parser.add_argument('--bigrams', action='store_true', default=False, help="Use BigramCollocationFinder for feature extaction")
-args = parser.parse_args()
+import numpy as np
 
 def get_data(path, label):
+    print "Generating %s data and labels" % label
     examples = glob.glob(path)
-    to_text = lambda fname: (features(open(fname).read()), label)
-    return map(to_text, examples)
-
-def features(sentence):
-    vectorizer = CountVectorizer(min_df=1, ngram_range=(1,3), stop_words='english')
-    X = vectorizer.fit_transform([ sentence ])
-    return dict((featx, True) for featx in vectorizer.get_feature_names())
+    to_text = lambda fname: open(fname).read()
+    examples = map(to_text, examples)
+    labels = [label for t in examples]
+    return (examples, labels)
 
 print "Extracting relevant and irrelevant examples..."
-relevant_examples = get_data("data/relevant/*", "relevant")
-irrelevant_examples = get_data("data/irrelevant/*", "irrelevant")
+relevant_examples, relevant_labels = get_data("data/relevant/*", "relevant")
+irrelevant_examples, irrelevant_labels = get_data("data/irrelevant/*", "irrelevant")
 
 print "Creating training set..."
-featuresets = relevant_examples + irrelevant_examples
+train_data = relevant_examples + irrelevant_examples
+y_train = np.array(relevant_labels + irrelevant_labels)
+Y = np.array(relevant_labels + irrelevant_labels)
 
-print "Shuffling training set"
-random.shuffle(featuresets)
+vectorizer = CountVectorizer(min_df=1, ngram_range=(1,3), stop_words='english')
+print "Generating features with", vectorizer
+X_train = vectorizer.fit_transform(train_data)
+print "X_train: n_samples: %d, n_features: %d" % X_train.shape
+print "y_train: n_samples: %d" % y_train.shape
 
-print "Featuresets: " + str(len(featuresets))
-print "\nBegin Cross validation"
-cv = cross_validation.KFold(len(featuresets), n_folds=10, indices=True, shuffle=True,
-        random_state=None, k=None)
+X_test = vectorizer.transform(train_data[1500:2100])
+y_test = y_train[1500:2100]
+print "X_test: n_samples: %d, n_features: %d" % X_test.shape
+print "y_test: n_samples: %d" % y_test.shape
 
-accuracies = []
-for traincv, testcv in cv:
-    shuffle(featuresets)
-    classifier = NaiveBayesClassifier.train(featuresets[traincv[0]:traincv[len(traincv)-1]])
-    classifier.show_most_informative_features()
-    accuracy = nltk.classify.util.accuracy(classifier, featuresets[testcv[0]:testcv[len(testcv)-1]])
-    accuracies.append(accuracy)
+clf = MultinomialNB()
+clf.fit(X_train, y_train)
 
-print "Accuracies:", accuracies
-print "Avg. Accuracy:", sum(accuracies)/len(accuracies)
+# from sklearn.metrics import f1_score
+# pred = clf.predict(X_test)
+# score = f1_score(y_test, pred)
+# print("f1-score:   %0.3f" % score)
+
+accuracy = clf.score(X_test, y_test)
+print "Accuracy:", accuracy
+print()
 
