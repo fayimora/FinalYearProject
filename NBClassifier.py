@@ -1,9 +1,8 @@
 import nltk, glob, random, argparse
 from nltk.classify import NaiveBayesClassifier
 from sklearn import cross_validation
-from nltk.collocations import BigramCollocationFinder
-from nltk.metrics import BigramAssocMeasures as BAM
-from itertools import chain
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.utils import shuffle
 
 parser = argparse.ArgumentParser(description = "Naive Bayes Classifier")
 parser.add_argument('--bigrams', action='store_true', default=False, help="Use BigramCollocationFinder for feature extaction")
@@ -15,13 +14,9 @@ def get_data(path, label):
     return map(to_text, examples)
 
 def features(sentence):
-    words = sentence.lower().split()
-    if not args.bigrams:
-        return dict((w, True) for w in words)
-    else:
-        bigram_finder = BigramCollocationFinder.from_words(words)
-        bigrams = bigram_finder.nbest(BAM.chi_sq, 200)
-        return dict((bg, True) for bg in chain(words, bigrams))
+    vectorizer = CountVectorizer(min_df=1, ngram_range=(1,3), stop_words='english')
+    X = vectorizer.fit_transform([ sentence ])
+    return dict((featx, True) for featx in vectorizer.get_feature_names())
 
 print "Extracting relevant and irrelevant examples..."
 relevant_examples = get_data("data/relevant/*", "relevant")
@@ -40,6 +35,7 @@ cv = cross_validation.KFold(len(featuresets), n_folds=10, indices=True, shuffle=
 
 accuracies = []
 for traincv, testcv in cv:
+    shuffle(featuresets)
     classifier = NaiveBayesClassifier.train(featuresets[traincv[0]:traincv[len(traincv)-1]])
     classifier.show_most_informative_features()
     accuracy = nltk.classify.util.accuracy(classifier, featuresets[testcv[0]:testcv[len(testcv)-1]])
