@@ -25,20 +25,19 @@ relevant_examples, relevant_labels = get_data("data/relevant/*", 1)
 irrelevant_examples, irrelevant_labels = get_data("data/irrelevant/*", -1)
 
 print "Creating training set..."
-train_data = np.asarray(relevant_examples + irrelevant_examples)
+X = np.asarray(relevant_examples + irrelevant_examples)
 Y = np.asarray(relevant_labels + irrelevant_labels)
-y_train = Y
 
-vectorizer = CountVectorizer(min_df=1, ngram_range=(1,2), stop_words='english')
+vectorizer = CountVectorizer(min_df=1, ngram_range=(1,2))
 clf = Pipeline([('vect', vectorizer), ('clf', MultinomialNB())])
 
-cv = cross_validation.ShuffleSplit(n=len(train_data), n_iter=10, test_size=0.20, indices=True,
+cv = cross_validation.ShuffleSplit(n=X.size, n_iter=10, test_size=0.20, indices=True,
         random_state=0)
 
 scores, pr_scores = [], []
 for train_idx, test_idx in cv:
-    X_train, y_train = train_data[train_idx], Y[train_idx]
-    X_test, y_test = train_data[test_idx], Y[test_idx]
+    X_train, y_train = X[train_idx], Y[train_idx]
+    X_test, y_test = X[test_idx], Y[test_idx]
 
     clf.fit(X_train, y_train)
 
