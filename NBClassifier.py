@@ -1,4 +1,4 @@
-import glob, random
+import glob, random, re
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn import cross_validation
@@ -10,7 +10,8 @@ def get_data(path, label):
     key = {1: 'relevant', -1: 'irrelevant'}
     print "Generating %s's data and labels" % key[label]
     examples = glob.glob(path)
-    to_pair = lambda fname: (open(fname).read(), label)
+    rm_links = lambda s: re.sub(r'(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?', '', s)
+    to_pair = lambda fname: (rm_links(open(fname).read()), label)
     examples = map(to_pair, examples)
     random.shuffle(examples)
 
