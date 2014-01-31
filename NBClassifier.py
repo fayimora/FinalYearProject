@@ -20,6 +20,13 @@ def get_data(path, label):
         labels.append(l)
     return (tweets, labels)
 
+def show_most_informative_features(vectorizer, clf, n=20):
+    """Prints the n most informative features"""
+    c_f = sorted(zip(clf.coef_[0], vectorizer.get_feature_names()))
+    top = zip(c_f[:n], c_f[:-(n+1):-1])
+    for (c1,f1),(c2,f2) in top:
+        print "\t(%.4f\t%-15s)\t\t(%.4f\t%-15s)" % (c1,f1,c2,f2)
+
 print "Extracting relevant and irrelevant examples..."
 relevant_examples, relevant_labels = get_data("data/relevant/*", 1)
 irrelevant_examples, irrelevant_labels = get_data("data/irrelevant/*", -1)
@@ -29,7 +36,8 @@ X = np.asarray(relevant_examples + irrelevant_examples)
 y = np.asarray(relevant_labels + irrelevant_labels)
 
 vectorizer = CountVectorizer(min_df=1, ngram_range=(1,2))
-clf = Pipeline([('vect', vectorizer), ('clf', MultinomialNB())])
+classifier = MultinomialNB()
+clf = Pipeline([('vect', vectorizer), ('clf', classifier)])
 
 cv = cross_validation.ShuffleSplit(n=X.size, n_iter=10, test_size=0.20, indices=True,
         random_state=0)
@@ -50,4 +58,4 @@ for train_idx, test_idx in cv:
     summary = (np.mean(scores), np.std(scores), np.mean(pr_scores), np.std(pr_scores))
     print "%.4f\t%.4f\t%.4f\t%.4f" % summary
 
-
+show_most_informative_features(vectorizer, classifier, n=40)
