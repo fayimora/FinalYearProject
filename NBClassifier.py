@@ -12,7 +12,7 @@ def get_data(path, label):
     examples = glob.glob(path)
     to_pair = lambda fname: (open(fname).read(), label)
     examples = map(to_pair, examples)
-    # random.shuffle(examples)
+    random.shuffle(examples)
 
     tweets, labels = [],[]
     for t, l in examples:
