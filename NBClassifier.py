@@ -41,8 +41,12 @@ clf = Pipeline([('vect', vectorizer), ('clf', classifier)])
 
 cv = cross_validation.ShuffleSplit(n=X.size, n_iter=10, test_size=0.20, indices=True,
         random_state=0)
-
+print clf
+print cv
 scores, pr_scores = [], []
+precisions, recalls, thresholds = [], [], []
+
+print "%4s\t%4s\t%4s\t%4s" % ("score", "std", "auc", "std")
 for train_idx, test_idx in cv:
     X_train, y_train = X[train_idx], y[train_idx]
     X_test, y_test = X[test_idx], y[test_idx]
@@ -54,7 +58,12 @@ for train_idx, test_idx in cv:
 
     proba = clf.predict_proba(X_test)
     precision, recall, pr_thresholds = precision_recall_curve(y_test, proba[:,1])
+
+    precisions.append(precision)
+    recalls.append(recall)
+    thresholds.append(pr_thresholds)
     pr_scores.append(auc(recall, precision))
+
     summary = (np.mean(scores), np.std(scores), np.mean(pr_scores), np.std(pr_scores))
     print "%.4f\t%.4f\t%.4f\t%.4f" % summary
 
