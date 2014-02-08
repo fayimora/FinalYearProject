@@ -6,27 +6,32 @@ from sklearn.metrics import precision_recall_curve, auc
 from sklearn.pipeline import Pipeline
 import numpy as np
 
+
+def rm_links(s):
+    return re.sub(r'(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?', '',s)
+
+
 def get_data(path, label):
     key = {1: 'relevant', -1: 'irrelevant'}
     print "Generating %s's data and labels" % key[label]
     examples = glob.glob(path)
-    rm_links = lambda s: re.sub(r'(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?', '', s)
     to_pair = lambda fname: (rm_links(open(fname).read()), label)
     examples = map(to_pair, examples)
     random.shuffle(examples)
 
-    tweets, labels = [],[]
+    tweets, labels = [], []
     for t, l in examples:
         tweets.append(t)
         labels.append(l)
     return (tweets, labels)
 
+
 def show_most_informative_features(vectorizer, clf, n=20):
     """Prints the n most informative features"""
     c_f = sorted(zip(clf.coef_[0], vectorizer.get_feature_names()))
-    top = zip(c_f[:n], c_f[:-(n+1):-1])
-    for (c1,f1),(c2,f2) in top:
-        print "\t(%.4f\t%-15s)\t\t(%.4f\t%-15s)" % (c1,f1,c2,f2)
+    top = zip(c_f[:n], c_f[:-(n + 1):-1])
+    for (c1, f1), (c2, f2) in top:
+        print "\t(%.4f\t%-15s)\t\t(%.4f\t%-15s)" % (c1, f1, c2, f2)
 
 print "Extracting relevant and irrelevant examples..."
 relevant_examples, relevant_labels = get_data("data/relevant/*", 1)
@@ -36,12 +41,12 @@ print "Creating training set..."
 X = np.asarray(relevant_examples + irrelevant_examples)
 y = np.asarray(relevant_labels + irrelevant_labels)
 
-vectorizer = CountVectorizer(min_df=1, ngram_range=(1,2))
+vectorizer = CountVectorizer(min_df=1, ngram_range=(1, 2))
 classifier = MultinomialNB()
 clf = Pipeline([('vect', vectorizer), ('clf', classifier)])
 
-cv = cross_validation.ShuffleSplit(n=X.size, n_iter=10, test_size=0.20, indices=True,
-        random_state=0)
+cv = cross_validation.ShuffleSplit(n=X.size, n_iter=10, test_size=0.20,
+                                   indices=True, random_state=0)
 print clf
 print cv
 scores, pr_scores = [], []
@@ -65,7 +70,8 @@ for train_idx, test_idx in cv:
     thresholds.append(pr_thresholds)
     pr_scores.append(auc(recall, precision))
 
-    summary = (np.mean(scores), np.std(scores), np.mean(pr_scores), np.std(pr_scores))
+    summary = (np.mean(scores), np.std(scores), np.mean(pr_scores),
+               np.std(pr_scores))
     print "%.4f\t%.4f\t%.4f\t%.4f" % summary
 
 show_most_informative_features(vectorizer, classifier, n=40)
