@@ -50,6 +50,7 @@ cv = cross_validation.ShuffleSplit(n=X.size, n_iter=10, test_size=0.20,
                                    indices=True, random_state=0)
 print clf
 print cv
+
 scores, pr_scores = [], []
 precisions, recalls, thresholds = [], [], []
 
