@@ -31,7 +31,7 @@ def show_most_informative_features(vectorizer, clf, n=20):
     c_f = sorted(zip(clf.coef_[0], vectorizer.get_feature_names()))
     top = zip(c_f[:n], c_f[:-(n + 1):-1])
     for (c1, f1), (c2, f2) in top:
-        print "\t(%.4f\t%-15s)\t\t(%.4f\t%-15s)" % (c1, f1, c2, f2)
+        print "\t[%.4f\t%-15s]\t\t[%.4f\t%-15s]" % (c1, f1, c2, f2)
 
 
 print "Extracting relevant and irrelevant examples..."
