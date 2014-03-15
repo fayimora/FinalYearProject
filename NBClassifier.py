@@ -40,17 +40,17 @@ def grid_search_model(clf_factory, X, Y):
     cv = cross_validation.ShuffleSplit(n=X.size, n_iter=10, test_size=0.20,
                                        indices=True, random_state=0)
 
-    param_grid = dict(all__tfidf__ngram_range=[(1, 1), (2, 2), (1, 2), (1, 3)],
-                      all__tfidf__min_df=[0, 0.5, 1, 1.5, 2],
-                      all__tfidf__stop_words=[None, 'english'],
-                      all__tfidf__norm=[None, 'l1', 'l2'],
-                      all__tfidf__use_idf=[False, True],
-                      all__tfidf_sublinear_tf=[False, True],
-                      all__tfidf_binary=[False, True],
+    param_grid = dict(vect__ngram_range=[(1, 1), (2, 2), (1, 2), (1, 3)],
+                      vect__min_df=[0, 0.5, 1, 1.5, 2],
+                      vect__stop_words=[None, 'english'],
+                      vect__norm=[None, 'l1', 'l2'],
+                      vect__use_idf=[False, True],
+                      vect__sublinear_tf=[False, True],
+                      vect__binary=[False, True],
                       clf__alpha=[0, 0.01, 0.05, 0.1, 0.5, 1],
                       )
 
-    grid_search = GridSearchCV(clf_factory(), param_grid=param_grid, cv=cv,
+    grid_search = GridSearchCV(clf_factory, param_grid=param_grid, cv=cv,
                                score_func=f1_score, verbose=100)
 
     print "Searching for best model..."
