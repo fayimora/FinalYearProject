@@ -1,4 +1,4 @@
-import glob, random, re
+import glob, random, re, os
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn import cross_validation
@@ -51,7 +51,7 @@ def grid_search_model(clf_factory, X, Y):
                       )
 
     grid_search = GridSearchCV(clf_factory, param_grid=param_grid, cv=cv,
-                               score_func=f1_score, verbose=100)
+                               score_func=f1_score, verbose=100, n_jobs=4)
 
     print "Searching for best model..."
     grid_search.fit(X, Y)
