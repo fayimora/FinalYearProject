@@ -1,6 +1,6 @@
 import glob, random, re
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn import cross_validation
 from sklearn.metrics import precision_recall_curve, auc
 from sklearn.pipeline import Pipeline
@@ -42,7 +42,8 @@ print "Creating training set..."
 X = np.asarray(relevant_examples + irrelevant_examples)
 y = np.asarray(relevant_labels + irrelevant_labels)
 
-vectorizer = CountVectorizer(min_df=1, ngram_range=(1, 2))
+# vectorizer = CountVectorizer(min_df=1, ngram_range=(1, 2))
+vectorizer = TfidfVectorizer(min_df=1, ngram_range=(1, 2), stop_words='english')
 classifier = MultinomialNB()
 clf = Pipeline([('vect', vectorizer), ('clf', classifier)])
 
@@ -76,4 +77,4 @@ for train_idx, test_idx in cv:
                np.std(pr_scores))
     print "%.4f\t%.4f\t%.4f\t%.4f" % summary
 
-show_most_informative_features(vectorizer, classifier, n=40)
+# show_most_informative_features(vectorizer, classifier, n=40)
