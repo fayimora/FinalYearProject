@@ -2,8 +2,9 @@ import glob, random, re
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn import cross_validation
-from sklearn.metrics import precision_recall_curve, auc
+from sklearn.metrics import precision_recall_curve, auc, f1_score
 from sklearn.pipeline import Pipeline
+from sklearn.grid_search import GridSearchCV
 import numpy as np
 
 
@@ -34,47 +35,79 @@ def show_most_informative_features(vectorizer, clf, n=20):
         print "\t[%.4f\t%-15s]\t\t[%.4f\t%-15s]" % (c1, f1, c2, f2)
 
 
-print "Extracting relevant and irrelevant examples..."
-relevant_examples, relevant_labels = get_data("data/relevant/*", 1)
-irrelevant_examples, irrelevant_labels = get_data("data/irrelevant/*", -1)
+def grid_search_model(clf_factory, X, Y):
+    """Searches fo the best model given a comination of hyper parameters"""
+    cv = cross_validation.ShuffleSplit(n=X.size, n_iter=10, test_size=0.20,
+                                       indices=True, random_state=0)
 
-print "Creating training set..."
-X = np.asarray(relevant_examples + irrelevant_examples)
-y = np.asarray(relevant_labels + irrelevant_labels)
+    param_grid = dict(all__tfidf__ngram_range=[(1, 1), (2, 2), (1, 2), (1, 3)],
+                      all__tfidf__min_df=[0, 0.5, 1, 1.5, 2],
+                      all__tfidf__stop_words=[None, 'english'],
+                      all__tfidf__norm=[None, 'l1', 'l2'],
+                      all__tfidf__use_idf=[False, True],
+                      all__tfidf_sublinear_tf=[False, True],
+                      all__tfidf_binary=[False, True],
+                      clf__alpha=[0, 0.01, 0.05, 0.1, 0.5, 1],
+                      )
 
-# vectorizer = CountVectorizer(min_df=1, ngram_range=(1, 2))
-vectorizer = TfidfVectorizer(min_df=1, ngram_range=(1, 2), stop_words='english')
-classifier = MultinomialNB()
-clf = Pipeline([('vect', vectorizer), ('clf', classifier)])
+    grid_search = GridSearchCV(clf_factory(), param_grid=param_grid, cv=cv,
+                               score_func=f1_score, verbose=100)
 
-cv = cross_validation.ShuffleSplit(n=X.size, n_iter=10, test_size=0.20,
-                                   indices=True, random_state=0)
-print clf
-print cv
+    print "Searching for best model..."
+    grid_search.fit(X, Y)
+    clf = grid_search.best_estimator_
 
-scores, pr_scores = [], []
-precisions, recalls, thresholds = [], [], []
+    print "Found best Estimator!"
+    print clf
+    return clf
 
-print "%4s\t%4s\t%4s\t%4s" % ("score", "std", "auc", "std")
-for train_idx, test_idx in cv:
-    X_train, y_train = X[train_idx], y[train_idx]
-    X_test, y_test = X[test_idx], y[test_idx]
 
-    clf.fit(X_train, y_train)
+def train_model(clf, X, Y):
+    cv = cross_validation.ShuffleSplit(n=X.size, n_iter=10, test_size=0.20,
+                                       indices=True, random_state=0)
 
-    score = clf.score(X_test, y_test)
-    scores.append(score)
+    scores, pr_scores = [], []
+    precisions, recalls, thresholds = [], [], []
 
-    proba = clf.predict_proba(X_test)
-    precision, recall, pr_thresholds = precision_recall_curve(y_test, proba[:,1])
+    print "%4s\t%4s\t%4s\t%4s" % ("score", "std", "auc", "std")
+    for train_idx, test_idx in cv:
+        X_train, y_train = X[train_idx], y[train_idx]
+        X_test, y_test = X[test_idx], y[test_idx]
 
-    precisions.append(precision)
-    recalls.append(recall)
-    thresholds.append(pr_thresholds)
-    pr_scores.append(auc(recall, precision))
+        clf.fit(X_train, y_train)
 
-    summary = (np.mean(scores), np.std(scores), np.mean(pr_scores),
-               np.std(pr_scores))
-    print "%.4f\t%.4f\t%.4f\t%.4f" % summary
+        score = clf.score(X_test, y_test)
+        scores.append(score)
+
+        proba = clf.predict_proba(X_test)
+        precision, recall, pr_thresholds = precision_recall_curve(y_test, proba[:,1])
+
+        precisions.append(precision)
+        recalls.append(recall)
+        thresholds.append(pr_thresholds)
+        pr_scores.append(auc(recall, precision))
+
+        summary = (np.mean(scores), np.std(scores), np.mean(pr_scores),
+                   np.std(pr_scores))
+        print "%.4f\t%.4f\t%.4f\t%.4f" % summary
+
+
+if __name__ == '__main__':
+    print "Extracting relevant and irrelevant examples..."
+    relevant_examples, relevant_labels = get_data("data/relevant/*", 1)
+    irrelevant_examples, irrelevant_labels = get_data("data/irrelevant/*", -1)
+
+    print "Creating training set..."
+    X = np.asarray(relevant_examples + irrelevant_examples)
+    y = np.asarray(relevant_labels + irrelevant_labels)
+
+    # vectorizer = CountVectorizer(min_df=1, ngram_range=(1, 2), stop_words='english')
+    vectorizer = TfidfVectorizer(min_df=1, ngram_range=(1, 2), stop_words='english')
+    classifier = MultinomialNB()
+    clf = Pipeline([('vect', vectorizer), ('clf', classifier)])
+
+    # train_model(clf, X, y)
+    best_clf = grid_search_model(clf, X, y)
+
 
 # show_most_informative_features(vectorizer, classifier, n=40)
