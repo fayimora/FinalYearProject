@@ -63,7 +63,7 @@ def grid_search_model(clf_factory, X, Y):
     return clf
 
 
-def train_model(clf, X, Y):
+def train_model(clf, X, Y, phase):
     cv = cross_validation.ShuffleSplit(n=X.size, n_iter=10, test_size=0.20,
                                        indices=True, random_state=0)
 
@@ -99,7 +99,7 @@ def train_model(clf, X, Y):
     median = np.argsort(scores_to_sort)[len(scores_to_sort) / 2]
     name = "NB Tweets Classifier"
 
-    plot_pr(pr_scores[median], name, "04", precisions[median], recalls[median],
+    plot_pr(pr_scores[median], name, phase, precisions[median], recalls[median],
             label=name)
 
 
@@ -150,6 +150,6 @@ if __name__ == '__main__':
     classifier = MultinomialNB()
     clf = Pipeline([('vect', vectorizer), ('clf', classifier)])
 
-    # train_model(clf, X, y)
-    train_model(get_best_classifier(), X, y)
+    # train_model(clf, X, y, "03")
+    train_model(get_best_classifier(), X, y, "04")
     # best_clf = grid_search_model(clf, X, y)
