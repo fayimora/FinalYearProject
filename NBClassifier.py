@@ -83,7 +83,8 @@ def train_model(clf, X, Y):
         scores.append(score)
 
         proba = clf.predict_proba(X_test)
-        precision, recall, pr_thresholds = precision_recall_curve(y_test, proba[:,1])
+        precision, recall, pr_thresholds = precision_recall_curve(y_test,
+                                                                  proba[:, 1])
 
         precisions.append(precision)
         recalls.append(recall)
@@ -142,14 +143,13 @@ if __name__ == '__main__':
     y = np.asarray(relevant_labels + irrelevant_labels)
 
     # vectorizer = CountVectorizer(min_df=1, ngram_range=(1, 2))
-    vectorizer = CountVectorizer(min_df=1, ngram_range=(1, 2), stop_words='english')
-    # vectorizer = TfidfVectorizer(min_df=1, ngram_range=(1, 2), stop_words='english')
+    # vectorizer = CountVectorizer(min_df=1, ngram_range=(1, 2),
+    #                              stop_words='english')
+    vectorizer = TfidfVectorizer(min_df=1, ngram_range=(1, 2),
+                                 stop_words='english')
     classifier = MultinomialNB()
     clf = Pipeline([('vect', vectorizer), ('clf', classifier)])
 
     # train_model(clf, X, y)
     train_model(get_best_classifier(), X, y)
     # best_clf = grid_search_model(clf, X, y)
-
-
-# show_most_informative_features(vectorizer, classifier, n=40)
