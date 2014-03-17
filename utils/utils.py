@@ -46,6 +46,8 @@ def create_instances():
             f = open(loc, 'w')
             f.write(status)
             f.close()
+            
+    print "Finished creating instances!"
 
 if __name__ == '__main__':
     create_instances()
