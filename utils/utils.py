@@ -1,5 +1,6 @@
 from pymongo import *
-import pickle, numpy, os
+import pickle, numpy, os, glob
+from joblib import Parallel, delayed
 
 def get_collection(db_name, coll):
     print "Connecting to the database..."
@@ -49,5 +50,16 @@ def create_instances():
             
     print "Finished creating instances!"
 
+
+def try_open(path):
+    try:
+        f = open(path).read()
+        f.flush()
+        f.close()
+    except(IOError):
+        print path
+
+
 if __name__ == '__main__':
-    create_instances()
+    # create_instances()
+    Parallel(n_jobs=-1)(delayed(try_open)(path) for path in glob.glob("../tweets/apple/*"))
