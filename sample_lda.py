@@ -23,7 +23,7 @@ documents = ['Human machine interface for lab abc computer applications',
 # texts = [[word for word in document.lower().split() if word not in
 #           ENGLISH_STOP_WORDS] for document in documents]
 
-vectorizer = CountVectorizer(min_df=1, ngram_range=(1, 2))
+vectorizer = CountVectorizer(min_df=1, ngram_range=(1, 2), stop_words='english')
 texts = [to_features(vectorizer, document) for document in documents]
 
 dictionary = corpora.Dictionary(texts)
