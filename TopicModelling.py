@@ -1,4 +1,4 @@
-import logging, glob
+import logging, glob, re
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.stop_words import ENGLISH_STOP_WORDS
 from gensim import corpora, models
@@ -17,7 +17,7 @@ files = glob.glob("data_3600/relevant/*")
 documents = map(lambda f: open(f).read(), files)
 
 print "Converting data to features..."
-stop_words = ENGLISH_STOP_WORDS#.union(['iphone', 'ipod', 'ipad', 'http', 'https', 'rt', 'apple'])
+stop_words = ENGLISH_STOP_WORDS.union(['iphone', 'ipod', 'ipad', 'mac', 'imac', 'http', 'https', 'rt', 'apple'])
 vectorizer = CountVectorizer(min_df=1, ngram_range=(1, 1), stop_words=stop_words)
 texts = [to_features(vectorizer, document) for document in documents]
 
