@@ -28,4 +28,4 @@ corpus = [dictionary.doc2bow(text) for text in texts]
 
 print "Creating LDA Model..."
 lda = LdaModel(corpus, id2word=dictionary, num_topics=10, passes=10, iterations=1000, update_every=1)
-corpus_lda = [l for l in lda[corpus]]
+topics = [l for l in lda[corpus]]
