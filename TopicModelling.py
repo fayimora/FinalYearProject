@@ -3,7 +3,6 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.stop_words import ENGLISH_STOP_WORDS
 from gensim import corpora
 from gensim.models.ldamodel import LdaModel
-from gensim.models.hdpmodel import HdpModel
 from itertools import imap
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s',
