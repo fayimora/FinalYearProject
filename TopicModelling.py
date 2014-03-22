@@ -15,7 +15,7 @@ def to_features(vect, doc):
     return vect.get_feature_names()
 
 print "Accumulating data..."
-files = glob.glob("data_3600/relevant/*")
+files = glob.iglob("data_3600/relevant/*")
 documents = imap(lambda f: open(f).read(), files)
 
 print "Converting data to features..."
