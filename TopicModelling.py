@@ -28,6 +28,5 @@ dictionary = corpora.Dictionary(texts)
 corpus = [dictionary.doc2bow(text) for text in texts]
 
 print "Creating LDA Model..."
-# hdp = HdpModel(corpus, id2word=dictionary) #use to determine number of topics
 lda = LdaModel(corpus, id2word=dictionary, num_topics=10, passes=10, iterations=1000, update_every=1)
 topics = [l for l in lda[corpus]]
