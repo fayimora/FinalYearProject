@@ -1,8 +1,9 @@
 import logging, glob, re
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.stop_words import ENGLISH_STOP_WORDS
-from gensim import corpora, models
+from gensim import corpora
 from gensim.models.ldamodel import LdaModel
+from gensim.models.hdpmodel import HdpModel
 from itertools import imap
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s',
@@ -27,5 +28,6 @@ dictionary = corpora.Dictionary(texts)
 corpus = [dictionary.doc2bow(text) for text in texts]
 
 print "Creating LDA Model..."
+# hdp = HdpModel(corpus, id2word=dictionary) #use to determine number of topics
 lda = LdaModel(corpus, id2word=dictionary, num_topics=10, passes=10, iterations=1000, update_every=1)
 topics = [l for l in lda[corpus]]
