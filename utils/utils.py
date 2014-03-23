@@ -47,19 +47,21 @@ def create_instances():
             f = open(loc, 'w')
             f.write(status)
             f.close()
-            
+
     print "Finished creating instances!"
 
 
 def try_open(path):
     try:
-        f = open(path).read()
+        f = open(path)
+        f.read()
         f.flush()
         f.close()
     except(IOError):
         print path
+        os.system("mv %s ../corr_tweets/" % f)
 
 
 if __name__ == '__main__':
     # create_instances()
-    Parallel(n_jobs=-1)(delayed(try_open)(path) for path in glob.glob("../tweets/apple/*"))
+    Parallel(n_jobs=-1)(delayed(try_open)(path) for path in glob.glob("../tweets/*"))
