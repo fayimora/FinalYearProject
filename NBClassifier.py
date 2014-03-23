@@ -101,6 +101,7 @@ def train_model(clf, X, Y, phase):
 
     plot_pr(pr_scores[median], name, phase, precisions[median], recalls[median],
             label=name)
+    return clf
 
 
 def get_best_classifier():
@@ -151,5 +152,9 @@ if __name__ == '__main__':
     clf = Pipeline([('vect', vectorizer), ('clf', classifier)])
 
     # train_model(clf, X, y, "03")
-    train_model(get_best_classifier(), X, y, "04")
+    model = train_model(get_best_classifier(), X, y, "__")
+
+    import pickle
+    print "Saving classifier"
+    pickle.dump(model, open('nb_twets_classifier.dat', 'w'))
     # best_clf = grid_search_model(clf, X, y)
