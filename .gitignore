@@ -6,3 +6,6 @@ data_3600
 output
 output-backup
 .ropeproject/
+*.npy
+*.dat
+*.state
