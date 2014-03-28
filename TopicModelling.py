@@ -9,17 +9,20 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s',
                     level=logging.INFO)
 
 
-def to_features(vect, doc):
-    doc = rm_usernames(rm_links(doc))
+def to_features(tweet):
+    stop_words = ['iphone', 'ipod', 'ipad', 'mac', 'imac', 'http', 'https', 'rt', 'apple']
+    stop_words = ENGLISH_STOP_WORDS.union(stop_words)
+    vectorizer = CountVectorizer(min_df=1, ngram_range=(1, 2), stop_words=stop_words)
+    tweet = rm_usernames(rm_links(tweet))
     try:
-        vect.fit_transform([doc])
-        return vect.get_feature_names()
+        vectorizer.fit_transform([tweet])
+        return vectorizer.get_feature_names()
     except ValueError, e:
         return ['']
 
 
-def rm_usernames(doc):
-    return re.sub('@[a-zA-Z0-9]+ ?', '', doc)
+def rm_usernames(tweet):
+    return re.sub('@[a-zA-Z0-9]+ ?', '', tweet)
 
 
 def rm_links(s):
@@ -28,19 +31,15 @@ def rm_links(s):
 
 print "Accumulating data..."
 files = glob.glob("../tweets/*")
-documents = imap(lambda f: open(f).read(), files[:10000])
+tweets = imap(lambda f: open(f).read(), files)
 
 print "Converting data to features..."
-stop_words = ['iphone', 'ipod', 'ipad', 'mac', 'imac', 'http', 'https', 'rt', 'apple']
-stop_words = ENGLISH_STOP_WORDS.union(stop_words)
-vectorizer = CountVectorizer(min_df=1, ngram_range=(1, 2), stop_words=stop_words)
-texts = [to_features(vectorizer, document) for document in documents]
+texts = [to_features(tweet) for tweet in tweets]
 
 print "Converting texts to bag of words..."
 dictionary = corpora.Dictionary(texts)
 corpus = [dictionary.doc2bow(text) for text in texts]
 
 print "Creating LDA Model..."
-lda = LdaModel(corpus, id2word=dictionary, num_topics=20, passes=10, iterations=1000,
-        update_every=100, alpha=0.02)
+lda = LdaModel(corpus, id2word=dictionary, num_topics=20, passes=2, iterations=2000, alpha='auto')
 lda_corpus = [l for l in lda[corpus]]
