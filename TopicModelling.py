@@ -25,8 +25,8 @@ def rm_usernames(tweet):
     return re.sub('@[a-zA-Z0-9]+ ?', '', tweet)
 
 
-def rm_links(s):
-    return re.sub(r'(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?', '', s)
+def rm_links(tweet):
+    return re.sub(r'(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?', '', tweet)
 
 
 print "Accumulating data..."
