@@ -41,5 +41,5 @@ dictionary = corpora.Dictionary(texts)
 corpus = [dictionary.doc2bow(text) for text in texts]
 
 print "Creating LDA Model..."
-lda = LdaModel(corpus, id2word=dictionary, num_topics=20, passes=2, iterations=2000, alpha='auto')
+lda = LdaModel(corpus, id2word=dictionary, num_topics=20, iterations=2000, alpha='auto')
 lda_corpus = [l for l in lda[corpus]]
