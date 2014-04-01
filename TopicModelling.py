@@ -29,17 +29,21 @@ def rm_links(tweet):
     return re.sub(r'(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?', '', tweet)
 
 
-print "Accumulating data..."
-files = glob.glob("../tweets/*")
-tweets = imap(lambda f: open(f).read(), files)
+def prettify(topics):
+    map(lambda ts: re.sub("\\s\+", ",", ts), map(lambda t: re.sub("(\d*\.\d*\*)", "", t), lda.show_topics(-1)))
 
-print "Converting data to features..."
-features = [to_features(tweet) for tweet in tweets]
+if __name__ == "__main__":
+    print "Accumulating data..."
+    files = glob.glob("../tweets/*")
+    tweets = imap(lambda f: open(f).read(), files)
 
-print "Converting features to bag of words..."
-dictionary = corpora.Dictionary(features)
-corpus = [dictionary.doc2bow(text) for text in features]
+    print "Converting data to features..."
+    features = [to_features(tweet) for tweet in tweets]
 
-print "Creating LDA Model..."
-lda = LdaModel(corpus, id2word=dictionary, num_topics=20, iterations=2000, alpha='auto')
-lda_corpus = [l for l in lda[corpus]]
+    print "Converting features to bag of words..."
+    dictionary = corpora.Dictionary(features)
+    corpus = [dictionary.doc2bow(text) for text in features]
+
+    print "Creating LDA Model..."
+    lda = LdaModel(corpus, id2word=dictionary, num_topics=20, iterations=2000, alpha='auto')
+    lda_corpus = [l for l in lda[corpus]]
