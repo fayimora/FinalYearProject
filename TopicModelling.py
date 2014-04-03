@@ -32,9 +32,8 @@ def rm_links(tweet):
 def prettify(topics):
     map(lambda ts: re.sub("\\s\+", ",", ts), map(lambda t: re.sub("(\d*\.\d*\*)", "", t), lda.show_topics(-1)))
 
-if __name__ == "__main__":
-    print "Accumulating data..."
-    files = glob.glob("../tweets/*")
+
+def get_params(files):
     tweets = imap(lambda f: open(f).read(), files)
 
     print "Converting data to features..."
@@ -43,6 +42,13 @@ if __name__ == "__main__":
     print "Converting features to bag of words..."
     dictionary = corpora.Dictionary(features)
     corpus = [dictionary.doc2bow(text) for text in features]
+    return corpus, features, dictionary
+
+
+if __name__ == "__main__":
+    print "Accumulating data..."
+    files = glob.glob("../tweets/*")
+    corpus, features, dictionary = get_params(files)
 
     print "Creating LDA Model..."
     lda = LdaModel(corpus, id2word=dictionary, num_topics=20, iterations=2000, alpha='auto')
