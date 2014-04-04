@@ -30,7 +30,7 @@ def rm_links(tweet):
 
 
 def prettify(topics):
-    map(lambda ts: re.sub("\\s\+", ",", ts), map(lambda t: re.sub("(\d*\.\d*\*)", "", t), lda.show_topics(-1)))
+    return map(lambda ts: re.sub("\\s\+", ",", ts), map(lambda t: re.sub("(\d*\.\d*\*)", "", t), lda.show_topics(-1)))
 
 
 def get_params(files):
