@@ -54,7 +54,11 @@ if __name__ == "__main__":
     corpus, features, dictionary = get_params(files)
 
     print "Creating LDA Model..."
-    lda = LdaModel(corpus, id2word=dictionary, num_topics=20, iterations=2000, alpha='auto')
+    lda = LdaModel(corpus, id2word=dictionary, num_topics=20, iterations=1000, alpha='auto')
     lda_corpus = [l for l in lda[corpus]]
+
+    print "Saving model..."
     lda.save("lda_model_unigrams.dat")
+
+    print "Saving distribution..."
     json.dump(lda_corpus, open("lda_corpus.json"))
