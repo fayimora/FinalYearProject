@@ -1,4 +1,7 @@
-import logging, glob, re
+import logging
+import glob
+import re
+import json
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.stop_words import ENGLISH_STOP_WORDS
 from gensim import corpora
@@ -53,3 +56,5 @@ if __name__ == "__main__":
     print "Creating LDA Model..."
     lda = LdaModel(corpus, id2word=dictionary, num_topics=20, iterations=2000, alpha='auto')
     lda_corpus = [l for l in lda[corpus]]
+    lda.save("lda_model_unigrams.dat")
+    json.dump(lda_corpus, open("lda_corpus.json"))
