@@ -17,12 +17,12 @@ class TopicModelHelpers:
         print "Loading tweet distribution..."
         self.tweet_dist = json.load(open(fnames[1]))
 
-    def get_tweets_in_topic(self, topic_id):
+    def get_tweets_in_topic(self, topic_id, threshold=0.20):
         tweet_ids = []
         for i, topic_dist in enumerate(self.tweet_dist):
             for topic, per in topic_dist:
-                if topic == topic_id and per >= 0.20:
+                if topic == topic_id and per >= threshold:
                     tweet_ids.append((i, per))
 
-        res = map(lambda (i, per): str(per)+" => "+self.tweets[i], tweet_ids)
+        res = map(lambda (i, per): (per, self.tweets[i]), tweet_ids)
         return res
