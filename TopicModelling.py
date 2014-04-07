@@ -2,6 +2,7 @@ import logging
 import glob
 import re
 import json
+import pickle
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.stop_words import ENGLISH_STOP_WORDS
 from gensim import corpora
@@ -13,14 +14,14 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s',
 
 
 def to_features(tweet):
-    stop_words = ['iphone', 'ipod', 'ipad', 'mac', 'imac', 'http', 'https', 'rt', 'apple']
+    stop_words = ['iphone', 'ipod', 'ipad', 'mac', 'imac', 'rt', 'apple', 'amp']
     stop_words = ENGLISH_STOP_WORDS.union(stop_words)
     vectorizer = CountVectorizer(min_df=1, ngram_range=(1, 2), stop_words=stop_words)
     tweet = rm_usernames(rm_links(tweet))
     try:
         vectorizer.fit_transform([tweet])
         return vectorizer.get_feature_names()
-    except ValueError, e:
+    except ValueError:
         return ['']
 
 
@@ -33,32 +34,36 @@ def rm_links(tweet):
 
 
 def prettify(topics):
-    return map(lambda ts: re.sub("\\s\+", ",", ts), map(lambda t: re.sub("(\d*\.\d*\*)", "", t), lda.show_topics(-1)))
+    return map(lambda ts: re.sub("\\s\+", ",", ts), map(lambda t: re.sub("(\d*\.\d*\*)", "", t), topics))
 
 
 def get_params(files):
-    tweets = imap(lambda f: open(f).read(), files)
-
     print "Converting data to features..."
-    features = [to_features(tweet) for tweet in tweets]
+    # tweets = imap(lambda f: open(f).read(), files)
+    # features = [to_features(tweet) for tweet in tweets]
+    features = json.load(open("models/lda_features.json"))
 
     print "Converting features to bag of words..."
     dictionary = corpora.Dictionary(features)
     corpus = [dictionary.doc2bow(text) for text in features]
+    # corpus = json.load(open("models/lda_corpus.json"))
+
     return corpus, features, dictionary
 
 
 if __name__ == "__main__":
-    print "Accumulating data..."
+    print "Loading file names..."
     files = glob.glob("../tweets/*")
     corpus, features, dictionary = get_params(files)
 
     print "Creating LDA Model..."
-    lda = LdaModel(corpus, id2word=dictionary, num_topics=20, iterations=1000, alpha='auto')
+    lda = LdaModel(corpus, id2word=dictionary, num_topics=20, iterations=1000, alpha=0.5)
     lda_corpus = [l for l in lda[corpus]]
 
     print "Saving model..."
     lda.save("lda_model_unigrams.dat")
 
     print "Saving distribution..."
-    json.dump(lda_corpus, open("lda_corpus.json"))
+    f = open("lda_topic_distribution.json", 'w')
+    json.dump(lda_corpus, f)
+    f.close()
