@@ -1,21 +1,29 @@
 import glob
-import json
+import re
 from gensim.models.ldamodel import LdaModel
+from TopicModelling import get_params
 
 
 class TopicModelHelpers:
     def __init__(self, fnames):
         """`fnames` is an array of files for [lda_model, distribution]"""
         print "Accumulating tweets..."
-        self.tweets = map(lambda f: open(f).read(), glob.glob("../tweets/*"))
+        files = glob.glob("data/relevant/*")
+        self.tweets = map(lambda f: open(f).read(), files)
 
         print "Loding topic model..."
         self.lda = LdaModel.load(fnames[0])
 
-        # self.corpus = json.load("")
+        self.corpus, self.features, self.dictionary = get_params(files)
 
         print "Loading tweet distribution..."
-        self.tweet_dist = json.load(open(fnames[1]))
+        self.tweet_dist = [l for l in self.lda[self.corpus]]
+        self.tweet_dist = map(lambda dist: sorted(dist, key=lambda arr: arr[1], reverse=True), self.tweet_dist)
+        # self.tweet_dist = json.load(open(fnames[1]))
+
+        tmp = map(lambda t: re.sub("(\d*\.\d*\*)", "", t), self.lda.show_topics(-1))
+        self.topics = map(lambda ts: re.sub("\\s\+", ",", ts), tmp)
+        self.topics.reverse()
 
     def get_tweets_in_topic(self, topic_id, threshold=0.20):
         tweet_ids = []
@@ -23,6 +31,7 @@ class TopicModelHelpers:
             for topic, per in topic_dist:
                 if topic == topic_id and per >= threshold:
                     tweet_ids.append((i, per))
+                    break
 
         res = map(lambda (i, per): (per, self.tweets[i]), tweet_ids)
         return res
