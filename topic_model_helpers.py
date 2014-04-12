@@ -35,3 +35,8 @@ class TopicModelHelpers:
 
         res = map(lambda (i, per): (per, self.tweets[i]), tweet_ids)
         return res
+
+    def filter_tweets(self, token, topic_id):
+        """ This function takes a token and a topic_id. It returns the tweets that have a proportion
+        of the argument topic and contains the argument token."""
+        return filter(lambda s: token in s[1].lower(), self.get_tweets_in_topic(topic_id))
