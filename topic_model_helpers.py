@@ -18,7 +18,8 @@ class TopicModelHelpers:
 
         print "Loading tweet distribution..."
         self.tweet_dist = [l for l in self.lda[self.corpus]]
-        self.tweet_dist = map(lambda dist: sorted(dist, key=lambda arr: arr[1], reverse=True), self.tweet_dist)
+        tmp = lambda dist: sorted(dist, key=lambda arr: arr[1], reverse=True)
+        self.tweet_dist = map(lambda dist: tmp(dist), self.tweet_dist)
         # self.tweet_dist = json.load(open(fnames[1]))
 
         tmp = map(lambda t: re.sub("(\d*\.\d*\*)", "", t), self.lda.show_topics(-1))
@@ -37,6 +38,6 @@ class TopicModelHelpers:
         return res
 
     def filter_tweets(self, token, topic_id):
-        """ This function takes a token and a topic_id. It returns the tweets that have a proportion
-        of the argument topic and contains the argument token."""
+        """ This function takes a token and a topic_id. It returns the tweets
+        that have a proportion of the argument topic and contains the argument token."""
         return filter(lambda s: token in s[1].lower(), self.get_tweets_in_topic(topic_id))
