@@ -1,10 +1,10 @@
-twitter = require('ntwitter')
-mongo  = require('mongodb')
-user = process.env.MONGO_USER
-password = process.env.MONGO_PASSWORD
-dbHost = "127.0.0.1"
-dbPort = mongo.Connection.DEFAULT_PORT
-db     = new mongo.Db("tweets", new mongo.Server(dbHost, dbPort, {}))
+twitter          = require('ntwitter')
+mongo            = require('mongodb')
+user             = process.env.MONGO_USER
+password         = process.env.MONGO_PASSWORD
+dbHost           = "127.0.0.1"
+dbPort           = mongo.Connection.DEFAULT_PORT
+db               = new mongo.Db("tweets", new mongo.Server(dbHost, dbPort, {}))
 tweetsCollection = "apple_tweets"
 
 auth = new twitter(
