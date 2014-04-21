@@ -2,7 +2,6 @@ import logging
 import glob
 import re
 import json
-import pickle
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.stop_words import ENGLISH_STOP_WORDS
 from gensim import corpora
@@ -39,9 +38,9 @@ def prettify(topics):
 
 def get_params(files):
     print "Converting data to features..."
-    # tweets = imap(lambda f: open(f).read(), files)
-    # features = [to_features(tweet) for tweet in tweets]
-    features = json.load(open("models/lda_features.json"))
+    tweets = imap(lambda f: open(f).read(), files)
+    features = [to_features(tweet) for tweet in tweets]
+    # features = json.load(open("models/lda_features.json"))
 
     print "Converting features to bag of words..."
     dictionary = corpora.Dictionary(features)
@@ -57,13 +56,13 @@ if __name__ == "__main__":
     corpus, features, dictionary = get_params(files)
 
     print "Creating LDA Model..."
-    lda = LdaModel(corpus, id2word=dictionary, num_topics=20, iterations=1000, alpha=0.5)
-    lda_corpus = [l for l in lda[corpus]]
+    lda = LdaModel(corpus, id2word=dictionary, num_topics=20, iterations=1000, alpha='auto', chunksize=20000)
+    lda_topic_distribution = [l for l in lda[corpus]]
 
     print "Saving model..."
     lda.save("lda_model_unigrams.dat")
 
     print "Saving distribution..."
     f = open("lda_topic_distribution.json", 'w')
-    json.dump(lda_corpus, f)
+    json.dump(lda_topic_distribution, f)
     f.close()
