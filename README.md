@@ -11,16 +11,18 @@ This repository contains every line of code I wrote for my BSc project.
 ## Usage
 To train a naive Bayes classifier, run `python NBClassifier.py`. It requires that the training set be in folders `data/relevant` and `data/irrelevant`.
 
-To run the topic model, run `python TopicModelling`. It trains topics using LDA and saves the model to a file. The dataset should be in a directory called tweets.
+For the topic model, run `python TopicModelling`. It trains topics using LDA and saves the model to a file. The dataset
+should be in a directory called tweets.
 
 The `models/` directory contains the models used in this study. To use them, 
-open a python console and use the `topic_model_helpers.py` script. An example 
+open a python console(preferably [IPython](http://ipython.org/)) and load the `topic_model_helpers.py` script. An example 
 run would be:
 
 ````
-tmh = TopicModelHelpers(["models/lda_unigrams_30.dat"]) #load the 30 topics model
+tmh = TopicModelHelpers(["models/lda_unigrams_30.dat"]) # load the 30 topics model
 tmh.topics # returns a list of topics and their token distribution
 tmh.get_tweets_in_topic(28) # show tweets with a proportion of topic 28
+tmh.filter_tweets("android", 19) # show tweets that have a proportion of topic 19 and have token android in them
 ````
 
 
