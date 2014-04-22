@@ -27,6 +27,7 @@ class TopicModelHelpers:
         self.topics.reverse()
 
     def get_tweets_in_topic(self, topic_id, threshold=0.20):
+        """Return tweets with at least `threshold` proportion of `topic_id`"""
         tweet_ids = []
         for i, topic_dist in enumerate(self.tweet_dist):
             for topic, per in topic_dist:
