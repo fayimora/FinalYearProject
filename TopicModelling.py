@@ -56,7 +56,7 @@ if __name__ == "__main__":
     corpus, features, dictionary = get_params(files)
 
     print "Creating LDA Model..."
-    lda = LdaModel(corpus, id2word=dictionary, num_topics=20, iterations=1000, alpha='auto', chunksize=20000)
+    lda = LdaModel(corpus, id2word=dictionary, num_topics=30, iterations=1000, alpha='auto', chunksize=50)
     lda_topic_distribution = [l for l in lda[corpus]]
 
     print "Saving model..."
