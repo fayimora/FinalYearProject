@@ -18,7 +18,7 @@ The `models/` directory contains the models used in this study. To use them,
 open a python console(preferably [IPython](http://ipython.org/)) and load the `topic_model_helpers.py` script. An example 
 run would be:
 
-````
+````python
 tmh = TopicModelHelpers(["models/lda_unigrams_30.dat"]) # load the 30 topics model
 tmh.topics # returns a list of topics and their token distribution
 tmh.get_tweets_in_topic(28) # show tweets with a proportion of topic 28
