@@ -1,5 +1,5 @@
 ## Description
-This repository contains every line of code I wrote for my BSc project.
+This repository contains every line of code I wrote for my BSc project. Report can be found [here](https://github.com/fayimora/FinalYearProject)
 
 `NBClassifier.py` can be used to train a NaiveBayes classifier.
 `TopicModelling.py` is used to detect themes in the dataset using gensim.
